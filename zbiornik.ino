@@ -50,11 +50,18 @@ enum
     HR_SIZE
 } HR_vars;
 
-int leds_array[] = {LED_LVL_WATER_1, LED_LVL_WATER_2,
-                    LED_LVL_WATER_3, LED_LVL_WATER_4,
-                    LED_SENS_X1, LED_SENS_X2,
-                    LED_SENS_X3, LED_PUMP_Z1,
-                    LED_PUMP_Z2, LED_HEATER_G};
+int leds_array[] = {
+                    LED_LVL_WATER_1, 
+                    LED_LVL_WATER_2,
+                    LED_LVL_WATER_3,
+                    LED_LVL_WATER_4,
+                    LED_SENS_X1, 
+                    LED_SENS_X2,
+                    LED_SENS_X3, 
+                    LED_PUMP_Z1,
+                    LED_PUMP_Z2, 
+                    LED_HEATER_G
+                    };
 
 unsigned int holdingRegs[HR_SIZE];
 
@@ -130,10 +137,10 @@ void timer_init()
     cli();
     TCCR1A = 0;
     TCCR1B = 0;
-
-    TCNT1 = 49910;                       // preload timer 65536-15MHz/256/1Hz/1s
-    TCCR1B |= (1 << CS12) | (1 << CS10); // 1024 prescaler
-    TIMSK1 |= (1 << TOIE1);              // enable timer overflow interrupt
+    // 5 sec
+    TCNT1 = 49910;
+    TCCR1B |= (1 << CS12) | (1 << CS10);
+    TIMSK1 |= (1 << TOIE1);
     sei();
 }
 
@@ -242,8 +249,8 @@ void water_lvl_led_shine(uint8_t led_pin, int lvl_formula)
 
 void temp_lvl_led_shine(uint8_t led_pin)
 {
-    int new_lvl = map(holdingRegs[HR_TEMP_WATER], 0, holdingRegs[HR_SP_TEMP_WATER],
-                      0, 255);
+    int new_lvl = map(holdingRegs[HR_TEMP_WATER], 0, 
+        holdingRegs[HR_SP_TEMP_WATER], 0, 255);
 
     analogWrite(led_pin, new_lvl);
 }
@@ -268,7 +275,8 @@ void device_led_state()
 
 void modbus_frame_update()
 {
-    holdingRegs[HR_SENS_TEMP] = holdingRegs[HR_TEMP_WATER] >= holdingRegs[HR_SP_TEMP_WATER];
+    holdingRegs[HR_SENS_TEMP] = 
+        holdingRegs[HR_TEMP_WATER] >= holdingRegs[HR_SP_TEMP_WATER];
     holdingRegs[HR_SENS_X1] = holdingRegs[HR_LVL_WATER] >= 200;
     holdingRegs[HR_SENS_X2] = holdingRegs[HR_LVL_WATER] >= 600;
     holdingRegs[HR_SENS_X3] = holdingRegs[HR_LVL_WATER] >= 1000;
