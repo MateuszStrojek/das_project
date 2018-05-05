@@ -22,8 +22,6 @@
 #define LED_PUMP_Z2 1
 #define LED_HEATER_G 1
 
-//                         < =  h o l d i n g    r e g s
-
 
 // - - - - - - - - - - - - - v a r i a b l e s - - - - - - - - - - - - - - - -|
 
@@ -190,7 +188,7 @@ void simulation_water_temp()
 {
     if (holdingRegs[HR_HEATER_G])
     {
-        change_water_parameter(HR_TEMP_WATER, '+', 3);
+        change_water_parameter(HR_TEMP_WATER, '+', 2);
     }
     else if (!holdingRegs[HR_HEATER_G] && holdingRegs[HR_TEMP_WATER] > 10)
     {
@@ -279,7 +277,7 @@ void modbus_frame_update()
         holdingRegs[HR_TEMP_WATER] >= holdingRegs[HR_SP_TEMP_WATER];
     holdingRegs[HR_SENS_X1] = holdingRegs[HR_LVL_WATER] >= 200;
     holdingRegs[HR_SENS_X2] = holdingRegs[HR_LVL_WATER] >= 600;
-    holdingRegs[HR_SENS_X3] = holdingRegs[HR_LVL_WATER] >= 1000;
+    holdingRegs[HR_SENS_X3] = holdingRegs[HR_LVL_WATER] >= 900;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -|
