@@ -7,21 +7,26 @@
 #define COM_BUADRATE 9600
 
 //                         < =  l e d    p i n s
-#define LED_LVL_WATER_1 2
-#define LED_LVL_WATER_2 3
-#define LED_LVL_WATER_3 4
-#define LED_LVL_WATER_4 5
-#define LED_TEMP_LVL 5
+#define LED_LVL_WATER_1 9   //1 dioda niebieska pwm
+#define LED_LVL_WATER_2 6   //2 dioda niebieska pwm
+#define LED_LVL_WATER_3 5   //3 dioda niebieska pwm
+#define LED_LVL_WATER_4 3   //4 dioda niebieska pwm
+#define LED_TEMP_LVL 10      //dioda pomaranczowa pwm
 
-#define LED_SENS_X1 1
-#define LED_SENS_X2 1
-#define LED_SENS_X3 1
-#define LED_SENS_TEMP 1
+#define LED_SENS_X1 7       //1 dioda czerwona
+#define LED_SENS_X2 4       //2 dioda czerwona
+#define LED_SENS_X3 2       //3 dioda czerwona
+#define LED_SENS_TEMP 8     //4 dioda czerwona
 
-#define LED_PUMP_Z1 1
-#define LED_PUMP_Z2 1
-#define LED_HEATER_G 1
+#define LED_PUMP_Z1 11       //1 dioda zielona - pompa z1
+#define LED_PUMP_Z2 12       //2 dioda zielona - pompa z2
+#define LED_HEATER_G 13      //3 dioda zielona - grzalka
 
+
+//* 4 diody niebieskie = stan wody
+//* 1 dioda pomarancozwa = temperatura
+//* 4 diody czerwone = czujniki wody/temp
+//* 3 diody zielone = pompy/grzalka
 
 // - - - - - - - - - - - - - v a r i a b l e s - - - - - - - - - - - - - - - -|
 
@@ -76,8 +81,8 @@ void setup()
     open_leds_pins();
     values_init();
     timer_init();
-    pinMode(9, OUTPUT);
-    digitalWrite(9, HIGH);
+    //pinMode(9, OUTPUT);
+    //digitalWrite(9, HIGH);
 }
 
 // - - - - - - - - - - - - - - - l o o p  - - - - - - - - - - - - - - - - - -|
@@ -151,7 +156,7 @@ ISR(TIMER1_OVF_vect)
 
     if (timer_cnt > 4)
     {
-        digitalWrite(9, !digitalRead(9));
+        //digitalWrite(9, !digitalRead(9));
         simulation_values();
         timer_cnt = 0;
     }
