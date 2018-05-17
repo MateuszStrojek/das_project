@@ -22,8 +22,15 @@
 #define LED_PUMP_Z2 1
 #define LED_HEATER_G 1
 
-
 // - - - - - - - - - - - - - v a r i a b l e s - - - - - - - - - - - - - - - -|
+
+int X1 = 0;
+int X2 = 0;
+int X3 = 0;
+int Z1 = 0;
+int Z2 = 0;
+int G = 0;
+int T = 0;
 
 enum
 {
@@ -49,17 +56,16 @@ enum
 } HR_vars;
 
 int leds_array[] = {
-                    LED_LVL_WATER_1, 
-                    LED_LVL_WATER_2,
-                    LED_LVL_WATER_3,
-                    LED_LVL_WATER_4,
-                    LED_SENS_X1, 
-                    LED_SENS_X2,
-                    LED_SENS_X3, 
-                    LED_PUMP_Z1,
-                    LED_PUMP_Z2, 
-                    LED_HEATER_G
-                    };
+    LED_LVL_WATER_1,
+    LED_LVL_WATER_2,
+    LED_LVL_WATER_3,
+    LED_LVL_WATER_4,
+    LED_SENS_X1,
+    LED_SENS_X2,
+    LED_SENS_X3,
+    LED_PUMP_Z1,
+    LED_PUMP_Z2,
+    LED_HEATER_G};
 
 unsigned int holdingRegs[HR_SIZE];
 
@@ -76,17 +82,17 @@ void setup()
     open_leds_pins();
     values_init();
     timer_init();
-    pinMode(9, OUTPUT);
-    digitalWrite(9, HIGH);
 }
 
 // - - - - - - - - - - - - - - - l o o p  - - - - - - - - - - - - - - - - - -|
 
-void loop()
-{    
-    modbus_update();
+int state = 0;
 
-    automatic_control();
+void loop()
+{
+    modbus_update();
+    user_function();
+    //automatic_control();
     modbus_frame_update();
     simualtion_leds();
 }
@@ -114,7 +120,7 @@ void open_leds_pins()
 
 void values_init()
 {
-    holdingRegs[HR_LVL_WATER] = 1024;
+    holdingRegs[HR_LVL_WATER] = 0;
     holdingRegs[HR_TEMP_WATER] = 10;
     holdingRegs[HR_SENS_X1] = 1;
     holdingRegs[HR_SENS_X2] = 1;
@@ -151,7 +157,7 @@ ISR(TIMER1_OVF_vect)
 
     if (timer_cnt > 4)
     {
-        digitalWrite(9, !digitalRead(9));
+        //digitalWrite(9, !digitalRead(9));
         simulation_values();
         timer_cnt = 0;
     }
@@ -173,12 +179,12 @@ void simulation_water_lvl()
     {
         if (holdingRegs[HR_LVL_WATER] > 0)
         {
-            change_water_parameter(HR_LVL_WATER, '-', 4);
-        }   
+            change_water_parameter(HR_LVL_WATER, '-', 50);
+        }
     }
     else if (holdingRegs[HR_PUMP_Z1] && !holdingRegs[HR_PUMP_Z2])
     {
-        change_water_parameter(HR_LVL_WATER, '+', 4);
+        change_water_parameter(HR_LVL_WATER, '+', 50);
     }
 }
 
@@ -247,8 +253,8 @@ void water_lvl_led_shine(uint8_t led_pin, int lvl_formula)
 
 void temp_lvl_led_shine(uint8_t led_pin)
 {
-    int new_lvl = map(holdingRegs[HR_TEMP_WATER], 0, 
-        holdingRegs[HR_SP_TEMP_WATER], 0, 255);
+    int new_lvl = map(holdingRegs[HR_TEMP_WATER], 0,
+                      holdingRegs[HR_SP_TEMP_WATER], 0, 255);
 
     analogWrite(led_pin, new_lvl);
 }
@@ -273,7 +279,7 @@ void device_led_state()
 
 void modbus_frame_update()
 {
-    holdingRegs[HR_SENS_TEMP] = 
+    holdingRegs[HR_SENS_TEMP] =
         holdingRegs[HR_TEMP_WATER] >= holdingRegs[HR_SP_TEMP_WATER];
     holdingRegs[HR_SENS_X1] = holdingRegs[HR_LVL_WATER] >= 200;
     holdingRegs[HR_SENS_X2] = holdingRegs[HR_LVL_WATER] >= 600;
@@ -310,7 +316,6 @@ void automatic_control()
         {
             holdingRegs[HR_HEATER_G] = 1;
         }
-
     }
 }
 
@@ -318,17 +323,73 @@ void automatic_control()
 
 void print_debug_log()
 {
-    Serial.println((String) "wl " + holdingRegs[HR_LVL_WATER] 
-                    + " | wt " + holdingRegs[HR_TEMP_WATER] 
-                    + " | z1 " + holdingRegs[HR_PUMP_Z1] 
-                    + " | z2 " + holdingRegs[HR_PUMP_Z2] 
-                    + " | x1 " + holdingRegs[HR_SENS_X1] 
-                    + " | x2 " + holdingRegs[HR_SENS_X2] 
-                    + " | x3 " + holdingRegs[HR_SENS_X3] 
-                    + " | g " + holdingRegs[HR_HEATER_G] 
-                    + " | st " + holdingRegs[HR_SENS_TEMP] 
-                    + " | spl " + holdingRegs[HR_SP_LVL_WATER] 
-                    + " | spt " + holdingRegs[HR_SP_TEMP_WATER]
-                    + " | ct " + holdingRegs[HR_CONTROL_TYPE]
-                    );
+    Serial.println((String) "wl " + holdingRegs[HR_LVL_WATER] + " | wt " + holdingRegs[HR_TEMP_WATER] + " | z1 " + holdingRegs[HR_PUMP_Z1] + " | z2 " + holdingRegs[HR_PUMP_Z2] + " | x1 " + holdingRegs[HR_SENS_X1] + " | x2 " + holdingRegs[HR_SENS_X2] + " | x3 " + holdingRegs[HR_SENS_X3] + " | g " + holdingRegs[HR_HEATER_G] + " | st " + holdingRegs[HR_SENS_TEMP] + " | spl " + holdingRegs[HR_SP_LVL_WATER] + " | spt " + holdingRegs[HR_SP_TEMP_WATER] + " | ct " + holdingRegs[HR_CONTROL_TYPE]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -|
+
+void mapping_io()
+{
+    X1 = holdingRegs[HR_SENS_X1];
+    X2 = holdingRegs[HR_SENS_X2];
+    X3 = holdingRegs[HR_SENS_X3];
+    T = holdingRegs[HR_TEMP_WATER];
+
+    holdingRegs[HR_PUMP_Z1] = Z1;
+    holdingRegs[HR_PUMP_Z2] = Z2;
+    holdingRegs[HR_HEATER_G] = G;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -|
+
+void user_function()
+{
+    if (holdingRegs[HR_CONTROL_TYPE] == automatic)
+    {
+        mapping_io();
+        switch (state)
+        {
+        case 0:
+            Z1 = 1;
+            Z2 = 0;
+            G = 0;
+            if (X1)
+                state = 1;
+            break;
+        case 1:
+            Z1 = 1;
+            Z2 = 0;
+            G = 0;
+            if (!X1)
+                state = 0;
+            if (X2)
+                state = 2;
+            break;
+        case 2:
+            Z1 = 1;
+            Z2 = 0;
+            G = 1;
+            if (!X2)
+                state = 1;
+            if (X3)
+                state = 3;
+            break;
+        case 3:
+            Z1 = 0;
+            Z2 = 0;
+            G = 1;
+            if (!X3)
+                state = 2;
+            if (T > 15)
+                state = 4;
+            break;
+        case 4:
+            Z1 = 0;
+            Z2 = 1;
+            G = 0;
+            if (!X1)
+                state = 0;
+            break;
+        }
+    }
 }
