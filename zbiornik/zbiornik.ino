@@ -7,21 +7,30 @@
 #define COM_BUADRATE 9600
 
 //                         < =  l e d    p i n s
-#define LED_LVL_WATER_1 2
-#define LED_LVL_WATER_2 3
-#define LED_LVL_WATER_3 4
-#define LED_LVL_WATER_4 5
-#define LED_TEMP_LVL 5
+#define LED_LVL_WATER_1 9   //1 dioda niebieska pwm
+#define LED_LVL_WATER_2 6   //2 dioda niebieska pwm
+#define LED_LVL_WATER_3 5   //3 dioda niebieska pwm
+#define LED_LVL_WATER_4 3   //4 dioda niebieska pwm
+#define LED_TEMP_LVL 10      //dioda pomaranczowa pwm
 
-#define LED_SENS_X1 1
-#define LED_SENS_X2 1
-#define LED_SENS_X3 1
-#define LED_SENS_TEMP 1
+#define LED_SENS_X1 7       //1 dioda czerwona
+#define LED_SENS_X2 4       //2 dioda czerwona
+#define LED_SENS_X3 2       //3 dioda czerwona
+#define LED_SENS_TEMP 8     //4 dioda czerwona
 
-#define LED_PUMP_Z1 1
-#define LED_PUMP_Z2 1
-#define LED_HEATER_G 1
+#define LED_PUMP_Z1 11       //1 dioda zielona - pompa z1
+#define LED_PUMP_Z2 12       //2 dioda zielona - pompa z2
+#define LED_HEATER_G 13      //3 dioda zielona - grzalka
 
+<<<<<<< HEAD:zbiornik.ino
+=======
+
+//* 4 diody niebieskie = stan wody
+//* 1 dioda pomarancozwa = temperatura
+//* 4 diody czerwone = czujniki wody/temp
+//* 3 diody zielone = pompy/grzalka
+
+>>>>>>> 1eef49c54a34a4a03fa93a797376896db39c4420:zbiornik/zbiornik.ino
 // - - - - - - - - - - - - - v a r i a b l e s - - - - - - - - - - - - - - - -|
 
 int X1 = 0;
@@ -82,6 +91,11 @@ void setup()
     open_leds_pins();
     values_init();
     timer_init();
+<<<<<<< HEAD:zbiornik.ino
+=======
+    //pinMode(9, OUTPUT);
+    //digitalWrite(9, HIGH);
+>>>>>>> 1eef49c54a34a4a03fa93a797376896db39c4420:zbiornik/zbiornik.ino
 }
 
 // - - - - - - - - - - - - - - - l o o p  - - - - - - - - - - - - - - - - - -|
@@ -323,6 +337,7 @@ void automatic_control()
 
 void print_debug_log()
 {
+<<<<<<< HEAD:zbiornik.ino
     Serial.println((String) "wl " + holdingRegs[HR_LVL_WATER] + " | wt " + holdingRegs[HR_TEMP_WATER] + " | z1 " + holdingRegs[HR_PUMP_Z1] + " | z2 " + holdingRegs[HR_PUMP_Z2] + " | x1 " + holdingRegs[HR_SENS_X1] + " | x2 " + holdingRegs[HR_SENS_X2] + " | x3 " + holdingRegs[HR_SENS_X3] + " | g " + holdingRegs[HR_HEATER_G] + " | st " + holdingRegs[HR_SENS_TEMP] + " | spl " + holdingRegs[HR_SP_LVL_WATER] + " | spt " + holdingRegs[HR_SP_TEMP_WATER] + " | ct " + holdingRegs[HR_CONTROL_TYPE]);
 }
 
@@ -393,3 +408,19 @@ void user_function()
         }
     }
 }
+=======
+    Serial.println((String) "wl " + holdingRegs[HR_LVL_WATER] 
+                    + " | wt " + holdingRegs[HR_TEMP_WATER] 
+                    + " | z1 " + holdingRegs[HR_PUMP_Z1] 
+                    + " | z2 " + holdingRegs[HR_PUMP_Z2] 
+                    + " | x1 " + holdingRegs[HR_SENS_X1] 
+                    + " | x2 " + holdingRegs[HR_SENS_X2] 
+                    + " | x3 " + holdingRegs[HR_SENS_X3] 
+                    + " | g " + holdingRegs[HR_HEATER_G] 
+                    + " | st " + holdingRegs[HR_SENS_TEMP] 
+                    + " | spl " + holdingRegs[HR_SP_LVL_WATER] 
+                    + " | spt " + holdingRegs[HR_SP_TEMP_WATER]
+                    + " | ct " + holdingRegs[HR_CONTROL_TYPE]
+                    );
+}
+>>>>>>> 1eef49c54a34a4a03fa93a797376896db39c4420:zbiornik/zbiornik.ino
